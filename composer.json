@@ -1,6 +1,6 @@
 {
     "name": "mugomes/miphantdblite",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "Crie tabelas e consulte, adicione, altere e exclua registros do SQLite3.",
     "type": "library",
     "authors": [
