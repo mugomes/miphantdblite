@@ -1,0 +1,14 @@
+# dados
+dados/
+
+# vendor
+vendor/
+
+# Composer
+composer.lock
+
+# ErrorLog
+error.log
+
+# Index
+index.php
