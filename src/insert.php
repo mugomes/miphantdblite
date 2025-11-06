@@ -8,6 +8,17 @@ namespace MiPhantDBLite;
 
 class insert extends database
 {
+    public function insertValue(string $name, string $value, string $nickname = '')
+    {
+        $this->sValores[] = [
+            'nickname' => $nickname,
+            'nome' => $name,
+            'valor' => $value
+        ];
+
+        return $this;
+    }
+
     public function insert()
     {
         try {
@@ -48,14 +59,19 @@ class insert extends database
             }
         } catch (\SQLite3Exception $ex) {
             $this->errorLog($ex);
+        } finally {
+            $this->sValores = [];
+            return $this;
         }
     }
 
-    public function execute() {
+    public function execute()
+    {
         $this->sResult->execute();
     }
 
-    public function idInsert(): int {
+    public function idInsert(): int
+    {
         return $this->sConecta->lastInsertRowID();
     }
 }

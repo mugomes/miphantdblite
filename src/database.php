@@ -42,10 +42,11 @@ class database
     public const CREATEONLY = SQLITE3_OPEN_CREATE;
     public const READONLY = SQLITE3_OPEN_READONLY;
 
-    public function __construct(array $data, bool $sandbox = false, int $options = SQLITE3_OPEN_READWRITE | SQLITE3_OPEN_CREATE)
+    public function __construct(string|array $data, bool $sandbox = false, int $options = SQLITE3_OPEN_READWRITE | SQLITE3_OPEN_CREATE)
     {
         try {
-            $this->sConecta = new \SQLite3($data['filename'], $options);
+            $sFilename = is_array($data) ? $data['filename'] : $data;
+            $this->sConecta = new \SQLite3($sFilename, $options);
 
             $this->sSandbox = $sandbox;
         } catch (\SQLite3Exception $ex) {
@@ -97,10 +98,10 @@ class database
         return $this;
     }
 
-    public function where(string $name, string|int $value, string $apelido = '') {
+    public function where(string $name, string|int $value, string $nickname = '') {
         $sAndOr = ($this->sAnd) ? ' AND ' : ' OR ';
         $this->sWhere[] = [
-            'apelido' => $apelido,
+            'nickname' => $nickname,
             'nome' => $name,
             'valor' => $value,
             'andor' => $sAndOr,
@@ -133,18 +134,8 @@ class database
         return $this;
     }
 
-    public function limit(int $page = 0, int $quantidade = 1) {
-        $this->sLike = $page . ',' . $quantidade;
-        return $this;
-    }
-
-    public function insertValue(string $name, string $value, string $apelido = '') {
-        $this->sValores[] = [
-            'apelido' => $apelido,
-            'nome' => $name,
-            'valor' => $value
-        ];
-
+    public function limit(int $page = 0, int $amount = 1) {
+        $this->sLimit = sprintf('%d,%d', $page, $amount);
         return $this;
     }
 
@@ -158,16 +149,16 @@ class database
             foreach ($this->sWhere as $row) {
                 if (empty($row['column'])) {
                     if ($this->sPrepare) {
-                        $apelido = $row['apelido'] ?: $row['nome'];
+                        $nickname = $row['nickname'] ?: $row['nome'];
                         if (empty($row['like'])) {
                             if ($row['in']) {
-                                $sql .= $row['nome'] . '=:' . $apelido . $sIn . $row['andor'];
+                                $sql .= $row['nome'] . '=:' . $nickname . $sIn . $row['andor'];
                                 $sIn += 1;
                             } else {
-                                $sql .= $row['nome'] . '=:' . $apelido . $row['andor'];
+                                $sql .= $row['nome'] . '=:' . $nickname . $row['andor'];
                             }
                         } else {
-                            $sql .= $row['nome'] . ' LIKE :' . $apelido . $row['andor'];
+                            $sql .= $row['nome'] . ' LIKE :' . $nickname . $row['andor'];
                         }
                     } else {
                         if (empty($row['like'])) {

@@ -17,7 +17,7 @@ class select extends database
             $sql .= (empty($this->sColumns)) ? '*' : implode(', ', $this->sColumns);
             $sql .= ' FROM ' . implode(' INNER JOIN ', $this->sTable);
             $sql .= $this->getWhere() . $this->getOrder() . $this->getLimit();
-
+ 
             if ($this->sPrepare) {
                 if ($this->sResult = $this->sConecta->prepare($sql)) {
                     $sIn = 1;

@@ -30,6 +30,9 @@ class delete extends database
             }
         } catch (\SQLite3Exception $ex) {
             $this->errorLog($ex);
+        } finally {
+            $this->sWhere = [];
+            return $this;
         }
     }
 }
